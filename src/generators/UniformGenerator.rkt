@@ -5,6 +5,7 @@
   (with-output-to-file output-file
     #:exists 'replace
     (lambda ()
+      (displayln num-samples)
       (for ([i (in-range num-samples)])
         (displayln (+ 1 (random 20))))))  ; [1,20]
   (printf "Generated ~a samples in ~a\n" num-samples output-file))

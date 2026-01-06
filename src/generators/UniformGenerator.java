@@ -19,6 +19,7 @@ public class UniformGenerator {
         Random random = new Random();
         
         try (FileWriter writer = new FileWriter(outputFile)) {
+            writer.write(numSamples + "\n");
             for (int i = 0; i < numSamples; i++) {
                 double value = random.nextDouble(); // [0,1)
                 writer.write(value + "\n");

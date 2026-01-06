@@ -4,6 +4,7 @@ import sys
 def generate_samples(num_samples, output_file):
     """Generate random numbers in [0,1) and save to file"""
     with open(output_file, 'w') as f:
+        f.write(f"{num_samples}\n")
         for _ in range(num_samples):
             value = random.random()  # [0,1)
             f.write(f"{value}\n")
