@@ -52,7 +52,9 @@ function variance_test_uniform(x; alpha=0.05)::Bool
 
     passed = chi2_lower <= chi2 <= chi2_upper
 
+    println("="^60)
     println("PRUEBA DE VARIANZA")
+    println("="^60)
     println("n = $n, x̄ = $(round(mean(x), digits=6)), s² = $(round(s2, digits=6))")
     println("σ² teórico = 1/12 = $(round(sigma2, digits=6))")
     println()
@@ -66,6 +68,8 @@ function variance_test_uniform(x; alpha=0.05)::Bool
     println()
     println("Resultado: $(passed ? "ACEPTA H₀" : "RECHAZA H₀")")
     println("Conclusión: Varianza $(passed ? "ES" : "NO ES") consistente con Uniform(0,1)")
+
+    println("="^60)
     
     # Return true if we fail to reject H0
     return passed

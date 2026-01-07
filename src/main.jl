@@ -9,13 +9,17 @@ include("proofs/series_test.jl")
 include("graphics/histogram.jl")
 
 numbers = read_sample()
+
 is_uniform = mean_test_uniform(numbers)
-is_uniform2 = variance_test_uniform(numbers)
-is_uniform3 = runs_test_uniform(numbers)
-is_uniform4 = digit_gap_test_uniform(numbers)
 println("Sample behaves uniform (mean): $is_uniform \n\n\n")
+
+is_uniform2 = variance_test_uniform(numbers)
 println("Sample behaves uniform (variance): $is_uniform2\n\n\n")
+
+is_uniform3 = runs_test_uniform(numbers)
 println("Sample behaves uniform (runs): $is_uniform3 \n\n\n")
+
+is_uniform4 = digit_gap_test_uniform(numbers)
 println("Sample behaves uniform (digit gap): $is_uniform4 \n\n\n")
 
 
@@ -31,8 +35,6 @@ is_uniform5 = poker_test_uniform(numbers)
 println("Sample behaves uniform (poker): $is_uniform5 \n\n\n")
 
 # Series test
-println("4. PRUEBA DE SERIES:")
-println("-"^40)
-series_results = series_test(numbers, 5)  # Default 5×5 grid
+series_results = series_test(numbers, 5)
 s_passed = series_results.passed
 println("Sample behaves uniform (series) : $s_passed \n\n\n")

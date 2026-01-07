@@ -31,6 +31,7 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
     println("Probabilidad t = sup - inf = $t")
     println("Tamaño de muestra: $n números")
     println()
+    println("="^60)
     
     # Step 1: Calculate gaps
     gaps = Int[]
