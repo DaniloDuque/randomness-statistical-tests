@@ -23,14 +23,14 @@ function variance_test_uniform(x; alpha=0.05)::Bool
     n = length(x)
     
     # Theoretical variance for Uniform(0,1)
-    sigma2_theoretical = 1 / 12  # ≈ 0.0833333
+    sigma2 = 1 / 12  # ≈ 0.0833333
     
     # Sample variance
     s2 = var(x)
     
     # Chi-squared test statistic
-    chi2_stat = (n - 1) * s2 / sigma2_theoretical
-    
+    chi2 = (n - 1) * s2 / sigma2    
+
     # Degrees of freedom
     df = n - 1
     
@@ -45,9 +45,30 @@ function variance_test_uniform(x; alpha=0.05)::Bool
 
     In other words: p * 100% of the probability mass is to the left of x
     """
+
+    # Confidence interval
+    L_inf = chi2_lower * sigma2 / (n - 1)
+    L_sup = chi2_upper * sigma2 / (n - 1)
+
+    passed = chi2_lower <= chi2 <= chi2_upper
+
+    println("PRUEBA DE VARIANZA")
+    println("n = $n, x̄ = $(round(mean(x), digits=6)), s² = $(round(s2, digits=6))")
+    println("σ² teórico = 1/12 = $(round(sigma2, digits=6))")
+    println()
+    println("χ²₀ = $(round(chi2, digits=4)), df = $df")
+    println("χ²(α/2=$alpha/2, $df) = $(round(chi2_lower, digits=4))")
+    println("χ²(1-α/2=$(1-alpha/2), $df) = $(round(chi2_upper, digits=4))")
+    println("Intervalo aceptación: [$(round(chi2_lower, digits=4)), $(round(chi2_upper, digits=4))]")
+    println()
+    println("IC 95% para σ²: [$(round(L_inf, digits=6)), $(round(L_sup, digits=6))]")
+    println("s² = $(round(s2, digits=6)) $(s2 >= L_inf && s2 <= L_sup ? "∈" : "∉") IC")
+    println()
+    println("Resultado: $(passed ? "ACEPTA H₀" : "RECHAZA H₀")")
+    println("Conclusión: Varianza $(passed ? "ES" : "NO ES") consistente con Uniform(0,1)")
     
     # Return true if we fail to reject H0
-    return chi2_lower <= chi2_stat <= chi2_upper
+    return passed
 end
 
 """
