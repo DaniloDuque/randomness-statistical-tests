@@ -1,6 +1,5 @@
 using Statistics, Distributions
 
-
 function runs_test_uniform(sample::Vector{Float64}, α::Float64=0.05)
     n = length(sample)
     

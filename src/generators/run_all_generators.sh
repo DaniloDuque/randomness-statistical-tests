@@ -1,8 +1,6 @@
 #!/bin/bash
-
 # Script to generate random number samples from all generators
 # Usage: ./run_all_generators.sh [num_samples]
-
 # Default to 1 million samples if not specified
 NUM_SAMPLES=${1:-1000000}
 
@@ -57,7 +55,7 @@ echo "5. C Generator {1,2,3,4}..."
 if [ -f "FourSidedUniformGenerator.c" ]; then
     gcc FourSidedUniformGenerator.c -o c_gen_4
     ./c_gen_4 $NUM_SAMPLES ./resources/c_discrete_1_4.txt
-    rm c_gen_4  # Clean up compiled binary
+    rm c_gen_4
 else
     echo "   ERROR: C Four Sided generator not found"
 fi
@@ -68,7 +66,7 @@ echo "6. C Generator {1,2,3,4,5,6,7,8}..."
 if [ -f "EightSidedUniformGenerator.c" ]; then
     gcc EightSidedUniformGenerator.c -o c_gen_8
     ./c_gen_8 $NUM_SAMPLES ./resources/c_discrete_1_8.txt
-    rm c_gen_8  # Clean up compiled binary
+    rm c_gen_8
 else
     echo "   ERROR: C Eight sided generator not found"
 fi
@@ -80,6 +78,15 @@ if [ -f "UniformGenerator.rkt" ]; then
     racket UniformGenerator.rkt $NUM_SAMPLES ./resources/racket_integer_1_20.txt
 else
     echo "   ERROR: UniformGenerator.rkt not found"
+fi
+
+# Prolog Generator [0,1)
+echo ""
+echo "8. Prolog Generator [0,1)..."
+if [ -f "UniformGenerator.pl" ]; then
+    swipl UniformGenerator.pl $NUM_SAMPLES ./resources/prolog_uniform_0_1.txt
+else
+    echo "   ERROR: UniformGenerator.pl not found"
 fi
 
 echo ""
