@@ -1,5 +1,68 @@
 using Statistics, Distributions, Printf
 
+
+"""
+    plot_number_gap_test(observed, expected, chi2_stat, df, alpha=0.05; filename="gap_test.png")
+
+Simple plot for gap test showing observed vs expected frequencies and chi-squared test.
+"""
+function plot_number_gap_test(observed, expected, chi2_stat, df; alpha=0.05, 
+                      filename="number_gap_test.png", inf=0.3, sup=0.7)
+    
+    # Create bar plot for observed vs expected
+    categories = length(observed)
+    x_labels = [string(i-1) for i in 1:categories-1]
+    push!(x_labels, "≥$(categories-1)")
+    
+    # Create grouped bar plot
+    x_pos = 1:categories
+    width = 0.35
+    
+    p = plot(size=(800, 400))
+    
+    # Observed frequencies (blue bars)
+    bar!(p, x_pos .- width/2, observed, 
+         label="Observado (fo)",
+         color=:blue,
+         alpha=0.7,
+         width=width)
+    
+    # Expected frequencies (red bars)
+    bar!(p, x_pos .+ width/2, expected,
+         label="Esperado (fe)",
+         color=:red,
+         alpha=0.7,
+         width=width)
+    
+    # Set plot properties
+    plot!(p,
+          xticks=(x_pos, x_labels),
+          xlabel="Tamaño del Hueco",
+          ylabel="Frecuencia",
+          title="Prueba de Huecos - Intervalo [$inf, $sup]",
+          legend=:topright)
+    
+    # Add chi-squared information as annotation
+    critical_value = quantile(Chisq(df), 1 - alpha)
+    passed = chi2_stat < critical_value
+    
+    annotate!(p, 
+              0.5, 0.95, 
+              text("χ² = $(round(chi2_stat, digits=3))", 10))
+    annotate!(p,
+              0.5, 0.90,
+              text("χ² crítico = $(round(critical_value, digits=3))", 10))
+    annotate!(p,
+              0.5, 0.85,
+              text("Resultado: $(passed ? "✓ ACEPTA" : "✗ RECHAZA")", 
+                   12, passed ? :green : :red))
+    
+    savefig(p, filename)
+    println("Plot guardado: $filename")
+    
+    return p
+end
+
 """
     number_gap_test(numbers, inf, sup; alpha=0.05, max_gap_cutoff=20)::NamedTuple
 
@@ -16,7 +79,7 @@ Perform the number gap test for a given interval [inf, sup].
 - Named tuple with test results and statistics
 """
 function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64; 
-                        alpha::Float64=0.05, max_gap_cutoff::Int=7)::NamedTuple
+                        alpha::Float64=0.05, max_gap_cutoff::Int=5)::NamedTuple
     
     # Validate interval
     @assert 0 ≤ inf ≤ sup ≤ 1 "Interval [inf, sup] must be within [0,1]"
@@ -142,9 +205,8 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
         println("  Los números NO siguen distribución uniforme")
     end
     println("="^60)
-    
-    # Return detailed results
-    return (
+
+    results = (
         passed = passed,
         chi2_statistic = chi2_stat,
         critical_value = critical_value,
@@ -158,6 +220,17 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
         theoretical_probabilities = theoretical_probs,
         gaps_data = gaps
     )
+
+    # try
+    plot_number_gap_test(observed, expected, chi2_stat, df, alpha=alpha, filename="number_gap_test.png", inf=inf, sup=sup)
+    # catch e
+    #     println("\nNota: Para gráficas, instale Plots.jl")
+    # end
+
+
+    
+    # Return detailed results
+    return results
 end
 
 """

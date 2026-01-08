@@ -1,6 +1,127 @@
 using Statistics, Distributions
 
 """
+    plot_series_test(grid, chi2_stat, df, alpha=0.05; filename="series_test.png")
+
+Plot heatmap of cell frequencies and chi-squared test for series test.
+"""
+function plot_series_test(grid, chi2_stat, df; alpha=0.05, filename="series_test.png")
+    grid_size = size(grid, 1)
+    
+    # Create heatmap of frequencies
+    heatmap_values = grid ./ maximum(grid)  # Normalize for better color scale
+    
+    p1 = heatmap(1:grid_size, 1:grid_size, heatmap_values,
+                c=:viridis,
+                aspect_ratio=:equal,
+                xlabel="Columna",
+                ylabel="Fila",
+                title="Frecuencias en Cuadrícula $(grid_size)×$(grid_size)",
+                colorbar_title="Frecuencia (normalizada)")
+    
+    # Add cell counts as text
+    for row in 1:grid_size
+        for col in 1:grid_size
+            annotate!(p1, col, row, text("$(grid[row, col])", 8, :white))
+        end
+    end
+    
+    # Chi-squared distribution plot
+    dist = Chisq(df)
+    critical_value = quantile(dist, 1 - alpha)
+    x_max = max(critical_value, chi2_stat) * 1.5
+    x_vals = range(0, x_max, length=500)
+    y_vals = pdf.(dist, x_vals)
+    
+    p2 = plot(x_vals, y_vals,
+             label="χ²(df=$df)",
+             title="Prueba χ² de Series",
+             xlabel="χ²",
+             ylabel="Densidad",
+             linewidth=2)
+    
+    # Mark critical value and test statistic
+    vline!(p2, [critical_value],
+           label="χ² crítico = $(round(critical_value, digits=3))",
+           linestyle=:dash,
+           color=:red)
+    
+    vline!(p2, [chi2_stat],
+           label="χ²₀ = $(round(chi2_stat, digits=3))",
+           linewidth=3,
+           color=:green)
+    
+    # Shade rejection region
+    if chi2_stat <= x_max
+        x_reject = range(critical_value, x_max, length=100)
+        y_reject = pdf.(dist, x_reject)
+        plot!(p2, x_reject, y_reject,
+              fillrange=0,
+              fillcolor=:red,
+              fillalpha=0.3,
+              label="Región de rechazo")
+    end
+    
+    # Add decision annotation
+    passed = chi2_stat < critical_value
+    annotate!(p2, x_max*0.6, maximum(y_vals)*0.9,
+              text("$(passed ? "✓ ACEPTA" : "✗ RECHAZA") H₀",
+                   12, passed ? :green : :red))
+    
+    # Combine plots
+    p = plot(p1, p2, layout=(1,2), size=(1000, 500))
+    
+    savefig(p, filename)
+    println("Plot guardado: $filename")
+    
+    return p
+end
+
+
+"""
+    plot_series_scatter(pairs, grid_size; filename="series_scatter.png")
+
+Scatter plot of number pairs with grid overlay.
+"""
+function plot_series_scatter(pairs, grid_size; max_points=1000, filename="series_scatter.png")
+    # Limit points for performance
+    n_plot = min(length(pairs), max_points)
+    
+    # Extract coordinates
+    x_coords = [p[1] for p in pairs[1:n_plot]]
+    y_coords = [p[2] for p in pairs[1:n_plot]]
+    
+    # Create scatter plot
+    p = scatter(x_coords, y_coords,
+                markersize=2,
+                markeralpha=0.5,
+                markercolor=:blue,
+                xlim=(0,1),
+                ylim=(0,1),
+                xlabel="xᵢ",
+                ylabel="xᵢ₊₁",
+                title="Pares Consecutivos (n=$n_plot)",
+                aspect_ratio=:equal,
+                legend=false)
+    
+    # Add grid lines
+    for i in 1:grid_size-1
+        line_pos = i/grid_size
+        plot!([line_pos, line_pos], [0, 1], color=:gray, linestyle=:dash, linewidth=0.5)
+        plot!([0, 1], [line_pos, line_pos], color=:gray, linestyle=:dash, linewidth=0.5)
+    end
+    
+    # Calculate and display correlation
+    if n_plot > 1
+        corr = cor(x_coords, y_coords)
+        annotate!(0.05, 0.95, text("Correlación: $(round(corr, digits=4))", 10))
+    end
+    
+    savefig(p, filename)
+    return p
+end
+
+"""
     create_number_pairs(numbers)::Vector{Tuple{Float64,Float64}}
 
 Create pairs of consecutive numbers: (n₁, n₂), (n₂, n₃), ..., (nₙ₋₁, nₙ)
@@ -147,6 +268,12 @@ function series_test(numbers::Vector{Float64}, grid_size::Int=5; alpha::Float64=
     end
     
     println("="^60)
+
+    # try
+        plot_series_test(grid, chi2_stat, df, alpha=alpha, filename="series_test.png")
+    # catch e
+    #     println("\nNota: Para gráficas, instale Plots.jl")
+    # end
     
     # Return detailed results
     return (
