@@ -12,6 +12,7 @@ main(_) ->
 generate_samples(NumSamples, OutputFile) ->
     {ok, File} = file:open(OutputFile, [write]),
     io:format(File, "~p~n", [NumSamples]),
+    io:format(File, "0 1~n", []),
     write_samples(File, NumSamples),
     file:close(File),
     io:format("Generated ~p samples in ~s~n", [NumSamples, OutputFile]).

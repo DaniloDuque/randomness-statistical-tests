@@ -1,5 +1,63 @@
 using Statistics, Distributions
 
+
+
+"""
+    plot_variance_test(chi2_stat, df; alpha=0.05, filename="variance_test.png")
+
+Simple plot for chi-squared variance test.
+"""
+function plot_variance_test(chi2_stat, df; alpha=0.05, filename="variance_test.png")
+    dist = Chisq(df)
+    lower = quantile(dist, alpha/2)
+    upper = quantile(dist, 1 - alpha/2)
+    
+    # Calculate reasonable x-axis range
+    # Chi-squared has mean = df, variance = 2df
+    mean = df
+    std_dev = sqrt(2 * df)
+    
+    # Show ±4 standard deviations around test statistic or mean
+    if df > 100
+        # For large df, center on test statistic
+        center = chi2_stat
+        x_min = max(0, center - 4*std_dev)
+        x_max = center + 4*std_dev
+    else
+        # For small df, center on distribution
+        x_min = 0
+        x_max = max(upper, chi2_stat) * 1.5
+    end
+    
+    # Ensure critical values are visible
+    x_min = min(x_min, lower * 0.9)
+    x_max = max(x_max, upper * 1.1)
+    
+    x_vals = range(x_min, x_max, length=500)
+    y_vals = pdf.(dist, x_vals)
+    
+    p = plot(x_vals, y_vals,
+             label="χ²(df=$df)",
+             title="Variance Test (n=$(df+1))",
+             xlabel="χ²",
+             ylabel="Density",
+             linewidth=2)
+    
+    vline!([lower, upper],
+           label=["χ²(α/2)" "χ²(1-α/2)"],
+           linestyle=:dash,
+           color=:red)
+    
+    vline!([chi2_stat],
+           label="χ²₀ = $(round(chi2_stat, digits=3))",
+           linewidth=3,
+           color=:green)
+    
+    savefig(p, filename)
+    println("Plot saved: $filename")
+    return p
+end
+
 """
 
 Test if the variance of sample `x` matches the theoretical variance of a Uniform(0,1) distribution.
@@ -70,6 +128,11 @@ function variance_test_uniform(x; alpha=0.05)::Bool
     println("Conclusión: Varianza $(passed ? "ES" : "NO ES") consistente con Uniform(0,1)")
 
     println("="^60)
+    try
+        plot_variance_test(chi2, df, alpha=alpha, filename="variance_test.png")
+    catch e
+        println("\nNote: Plot failed. Install Plots.jl: using Pkg; Pkg.add(\"Plots\")")
+    end
     
     # Return true if we fail to reject H0
     return passed
@@ -94,6 +157,7 @@ function variance_test_uniform_pvalue(x)::Float64
     p_lower = cdf(Chisq(df), chi2_stat)
     p_upper = 1 - p_lower
     p_value = 2 * min(p_lower, p_upper)
+
     
     return p_value
 end
@@ -127,6 +191,7 @@ function variance_test_uniform_details(x; alpha=0.05)
     p_lower = cdf(Chisq(df), chi2_stat)
     p_upper = 1 - p_lower
     p_value = 2 * min(p_lower, p_upper)
+
     
     return (
         passed = passed,

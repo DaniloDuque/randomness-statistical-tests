@@ -12,6 +12,7 @@ void generate_samples(int num_samples, const char* output_file) {
     srand(time(NULL));
     
     fprintf(file, "%d\n", num_samples);
+    fprintf(file, "1 4\n");
     for (int i = 0; i < num_samples; i++) {
         int value = (rand() % 4) + 1;  // {1,2,3,4}
         fprintf(file, "%d\n", value);

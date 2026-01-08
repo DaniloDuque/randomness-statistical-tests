@@ -13,7 +13,7 @@ function plot_histogram_uniform(numbers; bins=20)
     )
     
     # Overlay theoretical uniform PDF
-    x_range = range(0, 1, length=100)
+    x_range = range(0, 1, 100)
     theoretical_pdf = fill(1.0, 100)  # PDF = 1 for Uniform(0,1)
     plot!(x_range, theoretical_pdf, 
         linewidth=2, 
@@ -30,5 +30,6 @@ function plot_histogram_uniform(numbers; bins=20)
     annotate!(0.7, 0.85, text("Sample var: $(round(var_val, digits=4))", 8))
     annotate!(0.7, 0.8, text("Theoretical var: $(round(theoretical_var, digits=4))", 8))
     
+    gui()  # Keep plot window open
     return current()
 end

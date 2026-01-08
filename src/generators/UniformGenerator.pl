@@ -34,6 +34,7 @@ generate_samples(NumSamples, OutputFile) :-
     generate_numbers(Seed, NumSamples, Numbers),
     open(OutputFile, write, Stream),
     writeln(Stream, NumSamples),
+    writeln(Stream, '0 1'),
     write_numbers(Stream, Numbers),
     close(Stream),
     format('Generated ~w samples in ~w~n', [NumSamples, OutputFile]).

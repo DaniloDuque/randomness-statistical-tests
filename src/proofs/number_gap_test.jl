@@ -16,7 +16,7 @@ Perform the number gap test for a given interval [inf, sup].
 - Named tuple with test results and statistics
 """
 function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64; 
-                        alpha::Float64=0.05, max_gap_cutoff::Int=3)::NamedTuple
+                        alpha::Float64=0.05, max_gap_cutoff::Int=7)::NamedTuple
     
     # Validate interval
     @assert 0 ≤ inf ≤ sup ≤ 1 "Interval [inf, sup] must be within [0,1]"
@@ -95,9 +95,9 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
     
     # Step 4: Display frequency table
     println("TABLA DE FRECUENCIAS:")
-    println("-"^65)
+    println("─"^65)
     println(" Hueco |  fo   |   pe    |   fe   | fo-fe  | (fo-fe)² | (fo-fe)²/fe")
-    println("-"^65)
+    println("─"^65)
     
     chi2_stat = 0.0
     for i in 1:length(observed)
@@ -114,7 +114,7 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
         @printf(" %5s | %5d | %7.4f | %7.2f | %7.2f | %8.4f | %10.4f\n",
                 gap_label, fo, pe, fe, diff, diff_sq, chi2_contrib)
     end
-    println("-"^65)
+    println("─"^65)
     @printf(" Total | %5d | %7.4f | %7.2f |        |          | %10.4f\n",
             sum(observed), sum(theoretical_probs), sum(expected), chi2_stat)
     println()
@@ -128,17 +128,17 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
     passed = chi2_stat < critical_value
     
     println("PRUEBA CHI-CUADRADO:")
-    println("-"^40)
+    println("─"^40)
     println("χ² observado: $(round(chi2_stat, digits=4))")
     println("χ² crítico (α=$alpha, df=$df): $(round(critical_value, digits=4))")
     println("Valor p: $(round(p_value, digits=6))")
     println()
     
     if passed
-        println("✓ DECISIÓN: Se ACEPTA H₀")
+        println("  DECISIÓN: Se ACEPTA H₀")
         println("  Los números siguen distribución uniforme")
     else
-        println("✗ DECISIÓN: Se RECHAZA H₀")
+        println("  DECISIÓN: Se RECHAZA H₀")
         println("  Los números NO siguen distribución uniforme")
     end
     println("="^60)
