@@ -158,9 +158,9 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
     
     # Step 4: Display frequency table
     println("TABLA DE FRECUENCIAS:")
-    println("─"^65)
+    println("="^65)
     println(" Hueco |  fo   |   pe    |   fe   | fo-fe  | (fo-fe)² | (fo-fe)²/fe")
-    println("─"^65)
+    println("="^65)
     
     chi2_stat = 0.0
     for i in 1:length(observed)
@@ -177,7 +177,7 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
         @printf(" %5s | %5d | %7.4f | %7.2f | %7.2f | %8.4f | %10.4f\n",
                 gap_label, fo, pe, fe, diff, diff_sq, chi2_contrib)
     end
-    println("─"^65)
+    println("="^65)
     @printf(" Total | %5d | %7.4f | %7.2f |        |          | %10.4f\n",
             sum(observed), sum(theoretical_probs), sum(expected), chi2_stat)
     println()
@@ -191,7 +191,7 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
     passed = chi2_stat < critical_value
     
     println("PRUEBA CHI-CUADRADO:")
-    println("─"^40)
+    println("="^60)
     println("χ² observado: $(round(chi2_stat, digits=4))")
     println("χ² crítico (α=$alpha, df=$df): $(round(critical_value, digits=4))")
     println("Valor p: $(round(p_value, digits=6))")

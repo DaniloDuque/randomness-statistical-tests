@@ -10,6 +10,6 @@ function read_sample()
         push!(numbers, parse(Float64, readline()))
     end
     
-    return min, max, numbers
-    # return min, max, normalize_to_01(numbers)
+    # return min, max, numbers
+    return min, max, normalize_to_01(numbers, min, max)
 end

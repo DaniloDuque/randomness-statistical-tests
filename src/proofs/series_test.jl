@@ -78,48 +78,6 @@ function plot_series_test(grid, chi2_stat, df; alpha=0.05, filename="series_test
 end
 
 
-"""
-    plot_series_scatter(pairs, grid_size; filename="series_scatter.png")
-
-Scatter plot of number pairs with grid overlay.
-"""
-function plot_series_scatter(pairs, grid_size; max_points=1000, filename="series_scatter.png")
-    # Limit points for performance
-    n_plot = min(length(pairs), max_points)
-    
-    # Extract coordinates
-    x_coords = [p[1] for p in pairs[1:n_plot]]
-    y_coords = [p[2] for p in pairs[1:n_plot]]
-    
-    # Create scatter plot
-    p = scatter(x_coords, y_coords,
-                markersize=2,
-                markeralpha=0.5,
-                markercolor=:blue,
-                xlim=(0,1),
-                ylim=(0,1),
-                xlabel="xᵢ",
-                ylabel="xᵢ₊₁",
-                title="Pares Consecutivos (n=$n_plot)",
-                aspect_ratio=:equal,
-                legend=false)
-    
-    # Add grid lines
-    for i in 1:grid_size-1
-        line_pos = i/grid_size
-        plot!([line_pos, line_pos], [0, 1], color=:gray, linestyle=:dash, linewidth=0.5)
-        plot!([0, 1], [line_pos, line_pos], color=:gray, linestyle=:dash, linewidth=0.5)
-    end
-    
-    # Calculate and display correlation
-    if n_plot > 1
-        corr = cor(x_coords, y_coords)
-        annotate!(0.05, 0.95, text("Correlación: $(round(corr, digits=4))", 10))
-    end
-    
-    savefig(p, filename)
-    return p
-end
 
 """
     create_number_pairs(numbers)::Vector{Tuple{Float64,Float64}}

@@ -6,7 +6,7 @@ function normalize_to_01(numbers, min, max)
         return numbers
     end
     @assert max > 0
-    return [(x - min)/(max - 1) for x in numbers]
+    return [(x - min)/(max - min) for x in numbers]
 end
 
 function gauss(n::Int)::Int
@@ -42,27 +42,5 @@ function get_theoretical_variance(max_val, is_continuous=false, min_val=1)
         # Default min_val = 1
         n = max_val - min_val + 1
         return ((n^2 - 1)/12) / ((max_val - min_val)^2)
-    end
-end
-
-
-"""
-    get_original_range(source_type)
-
-Get the original range of values for display purposes.
-"""
-function get_original_range(source_type::Symbol)
-    if source_type in [:java, :erlang, :python_float]
-        return "[0,1)"
-    elseif source_type == :python_dice
-        return "{1,2,3,4,5,6}"
-    elseif source_type == :c_dice4
-        return "{1,2,3,4}"
-    elseif source_type == :c_dice8
-        return "{1,2,3,4,5,6,7,8}"
-    elseif source_type == :scheme
-        return "[1,20] (enteros)"
-    else
-        return "Unknown"
     end
 end
