@@ -54,7 +54,7 @@ function plot_variance_test(chi2_stat, df; alpha=0.05, filename="variance_test.p
            color=:green)
     
     savefig(p, filename)
-    println("Plot saved: $filename")
+    # println("Plot saved: $filename")
     return p
 end
 
@@ -110,6 +110,7 @@ function variance_test_uniform(x; alpha=0.05)::Bool
 
     passed = chi2_lower <= chi2 <= chi2_upper
 
+    println("─"^80)
     println("="^60)
     println("PRUEBA DE VARIANZA")
     println("="^60)
@@ -133,6 +134,7 @@ function variance_test_uniform(x; alpha=0.05)::Bool
     catch e
         println("\nNote: Plot failed. Install Plots.jl: using Pkg; Pkg.add(\"Plots\")")
     end
+    println("─"^80)
     
     # Return true if we fail to reject H0
     return passed

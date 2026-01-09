@@ -44,10 +44,6 @@ function poker_test_uniform(sample::Vector{Float64};
                             α::Float64 = 0.05,
                             prefix::String = "poker_test")
 
-    println("DEBUG: Starting poker_test_uniform")
-    println("DEBUG: sample type = ", typeof(sample))
-    println("DEBUG: α type = ", typeof(α))
-    println("DEBUG: prefix type = ", typeof(prefix))
 
     # --------------------------------------------------------
     # Step 1: Observed frequencies
@@ -98,7 +94,6 @@ function poker_test_uniform(sample::Vector{Float64};
     end
 
     sample_size = length(sample)
-    println("DEBUG: n = ", sample_size, ", type = ", typeof(sample_size))
 
     # --------------------------------------------------------
     # Step 2: Expected probabilities

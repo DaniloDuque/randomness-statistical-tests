@@ -72,7 +72,7 @@ function plot_series_test(grid, chi2_stat, df; alpha=0.05, filename="series_test
     p = plot(p1, p2, layout=(1,2), size=(1000, 500))
     
     savefig(p, filename)
-    println("Plot guardado: $filename")
+    # println("Plot guardado: $filename")
     
     return p
 end
@@ -133,6 +133,7 @@ function series_test(numbers::Vector{Float64}, grid_size::Int=5; alpha::Float64=
     pairs = create_number_pairs(numbers)
     n_pairs = length(pairs)
     
+    println("─"^80)
     println("="^60)
     println("PRUEBA DE SERIES")
     println("="^60)
@@ -232,6 +233,7 @@ function series_test(numbers::Vector{Float64}, grid_size::Int=5; alpha::Float64=
     # catch e
     #     println("\nNota: Para gráficas, instale Plots.jl")
     # end
+    println("─"^80)
     
     # Return detailed results
     return (

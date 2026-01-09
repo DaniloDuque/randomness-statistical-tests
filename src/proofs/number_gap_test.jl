@@ -58,7 +58,7 @@ function plot_number_gap_test(observed, expected, chi2_stat, df; alpha=0.05,
                    12, passed ? :green : :red))
     
     savefig(p, filename)
-    println("Plot guardado: $filename")
+    # println("Plot guardado: $filename")
     
     return p
 end
@@ -87,6 +87,7 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
     n = length(numbers)
     t = sup - inf  # Probability of falling in interval
     
+    println("─"^80)
     println("="^60)
     println("PRUEBA DE HUECOS CON NÚMEROS")
     println("="^60)
@@ -205,6 +206,7 @@ function number_gap_test(numbers::Vector{Float64}, inf::Float64, sup::Float64;
         println("  Los números NO siguen distribución uniforme")
     end
     println("="^60)
+    println("─"^80)
 
     results = (
         passed = passed,
